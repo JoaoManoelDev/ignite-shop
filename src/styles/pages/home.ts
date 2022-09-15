@@ -45,7 +45,8 @@ export const Product = styled('a',   {
 
     strong: {
       fontSize: '$lg',
-      maxWidth: '100%'
+      maxWidth: '100%',
+      color: '$gray100'
     },
 
     span: {
