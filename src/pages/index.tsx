@@ -3,14 +3,9 @@ import { HomeContainer, Product } from "../styles/pages/home"
 import { useKeenSlider } from 'keen-slider/react'
 import Stripe from 'stripe'
 
-import shirt01 from '../assets/shirts/shirt01.png'
-import shirt02 from '../assets/shirts/shirt02.png'
-import shirt03 from '../assets/shirts/shirt03.png'
-import shirt04 from '../assets/shirts/shirt04.png'
-
 import 'keen-slider/keen-slider.min.css'
 import { stripe } from "../lib/stripe"
-import { GetServerSideProps } from "next"
+import { GetStaticProps } from "next"
 
 interface HomeProps {
   products: {
@@ -48,7 +43,7 @@ export default function Home({ products }: HomeProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price']
   })
@@ -64,9 +59,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   })
 
+  const twoHours = 60 * 60 * 2
+
   return {
     props: {
       products,
-    }
+    },
+    revalidate: twoHours,
   }
 }
