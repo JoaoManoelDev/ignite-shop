@@ -5,12 +5,13 @@ const nextConfig = {
 
   images: {
     domains: [
-      'files.stripe.com'
+      'files.stripe.com',
+      'avatars.githubusercontent.com'
     ]
   },
 
   experimental: {
-    newNextLinkBehavior: true
+    // newNextLinkBehavior: true
   }
 }
 

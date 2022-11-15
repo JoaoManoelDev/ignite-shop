@@ -7,13 +7,13 @@ export const ProductContainer = styled('main', {
   gap: '4rem',
 
   maxWidth: 1180,
-  margin: '0 auto',
+  margin: '0 auto 2rem auto',
 })
 
 export const ImgageContainer = styled('div', {
   width: '100%',
-  maxWidth: 576,
-  height: 656,
+  maxWidth: 500,
+  height: 500,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
   borderRadius: 8,
   padding: '0.25rem',
@@ -57,7 +57,6 @@ export const ProductDatails = styled('div', {
     color: '$white',
     borderRadius: 8,
     padding: '1.25rem',
-    cursor: 'pointer',
     fontWeight: 'bold',
     fontSize: '$md',
 
@@ -66,7 +65,8 @@ export const ProductDatails = styled('div', {
       cursor: 'not-allowed'
     },
 
-    '&:not(:disabled)hover': {
+    '&:not(:disabled):hover': {
+      transition: '0.2s',
       backgroundColor: '$green300',
     }
   }

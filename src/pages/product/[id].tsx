@@ -4,56 +4,30 @@ import Stripe from 'stripe'
 import { ImgageContainer, ProductContainer, ProductDatails } from "../../styles/pages/product"
 import Image from "next/future/image"
 import { useRouter } from "next/router"
-import axios from 'axios'
-import { useState } from "react"
 import Head from "next/head"
+import { useCart } from "../../hooks/useCart"
+import { IProduct } from "../../Contexts/CartContext"
 
 interface ProductProps {
-  product: {
-    id: string
-    name: string
-    imageUrl: string
-    price: string
-    description: string
-    defaultPriceId: string
-  }
+  product: IProduct
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
-
   const { isFallback } = useRouter()
+
+  const { addItemToCart, checkIfItemAlreadyExistsInCart } = useCart()
 
   if (isFallback) {
     return <p>Loading...</p>
   }
 
-  async function handleBuyProduct() {
-    try {
+  const itemAlreadyInCart = checkIfItemAlreadyExistsInCart(product.id)
 
-      setIsCreatingCheckoutSession(true)
-      
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-
-    } catch (error) {
-      // Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
-
-      setIsCreatingCheckoutSession(false)
-
-      alert('Falha ao redirecionar ao checkout.')
-    } 
-  }
-
+  const siteTitle = "Ignite Shop"
   return (
     <>
       <Head>
-        <title>{product.name} - Ignite Shop</title>
+        <title>{product.name + " - " + siteTitle}</title>
       </Head>
 
       <ProductContainer>
@@ -67,8 +41,8 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
-            Comprar agora
+          <button disabled={itemAlreadyInCart} onClick={() => addItemToCart(product)}>
+            { itemAlreadyInCart ? 'Produto já esá na sacola' : 'Adicionar a sacola' } 
           </button>
         </ProductDatails>
       </ProductContainer>
@@ -108,7 +82,8 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
           currency: 'BRL',
         }).format(price.unit_amount / 100),
         description: product.description,
-        defaultPriceId: price.id
+        defaultPriceId: price.id,
+        numberPrice: price.unit_amount / 100,
       }
     },
     revalidate: oneHour,
